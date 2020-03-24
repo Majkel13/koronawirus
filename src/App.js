@@ -104,7 +104,8 @@ class App extends Component {
     confirmedCountry: 0,
     recoveredCountry: 0,
     deathsCountry: 0,
-    countries:[]
+    countries:[],
+    lastUpdate:''
 
   }
   componentDidMount = () =>{
@@ -118,7 +119,8 @@ class App extends Component {
     this.setState({
       confirmed: respone.data.confirmed.value,
       recovered: respone.data.recovered.value,
-      deaths: respone.data.deaths.value
+      deaths: respone.data.deaths.value,
+      lastUpdate: respone.data.lastUpdate
     })
   }
   async getDataPoland(){
@@ -131,7 +133,8 @@ class App extends Component {
   }
   async getCountry(){
     const respone = await Axios.get('https://covid19.mathdro.id/api/countries');
-    const countries = Object.keys(respone.data.countries)
+    const countries=JSON.parse(JSON.stringify(respone.data.countries));
+    
     this.setState({
       countries
     })
@@ -146,7 +149,7 @@ class App extends Component {
   }
   selectCountry(){
     return this.state.countries.map((country,i)=>{
-      return <Option key={i}>{country}</Option>
+      return <Option key={i}>{country.name}</Option>
     })
   }
 
@@ -160,6 +163,7 @@ class App extends Component {
         {this.selectCountry()}
       </Select></H1> 
       <Box title="" confirmed={this.state.confirmedCountry} recovered={this.state.recoveredCountry} deaths={this.state.deathsCountry} />
+      {this.state.lastUpdate}
      </Container>
     
 
