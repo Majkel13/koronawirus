@@ -4,7 +4,7 @@ import React, {Component} from 'react';
 import styled from 'styled-components'
 
 const Container = styled.div`
-background: #250033;
+background: #343744;
 width: 80%;
 border-radius: 25px;
 padding: 20px;
@@ -13,8 +13,10 @@ max-width: 680px;
 text-align:center;
 margin: 0 auto;
 margin-top: 40px;
+margin-bottom: 40px;
 justify-content: center;
 font-size: 20px;
+font-family: 'Roboto Mono', monospace;
 `
 const Content = styled.div`
 display: flex;
@@ -27,25 +29,25 @@ justify-content: center;
   padding-top:25px;
 `
 const Div = styled.div`
-background: #534;
+background: #1f2427;
 width: 150px;
 padding: 10px;
 border-radius: 10px;
-
-color: #ccc;
+color: #aaa;
 margin: 0 auto;
 margin-top:10px;
 `
-const H1 = styled.h1`
-color: #889;
+const H1 = styled.header`
+color: #aaa;
 font-size:30px;
-margin-bottom: 0px;
+padding-top:15px;
 `
 
 const Select = styled.select`
-background: #250033;
-color: #889;
-font-size: 20px;
+background: #343744;
+border-style: dashed;
+color: #aaa;
+font-size: 30px;
 border-radius: 5px;
 text-align-last: center;
    text-align: center;
@@ -60,6 +62,10 @@ const Option = styled.option`
 padding-top:5px;
 padding-bottom:5px;
 `
+const Footer = styled.footer`
+font-size: 15px;
+color: #000;
+`
 class Box extends Component{
 
 
@@ -69,17 +75,17 @@ class Box extends Component{
     <div>
       <H1>{title}</H1>
       <Content> 
-        <Div style={{ background: '#b38f00' }}>
+        <Div >
           <header>Zarażeń</header>
-          {confirmed}
+          <span style={{ color: '#b38f00' }}>{confirmed}</span>
         </Div>
-        <Div style={{ background: '#123123' }}>
+        <Div >
           <header>Wyzdrownień</header>
-          {recovered}
+           <span style={{ color: '#12aa23' }}>{recovered}</span>
         </Div>
-        <Div style={{ background: '#111' }}>
+        <Div >
           <header>Zgonów</header>
-          {deaths}
+          <span style={{ color: '#c11' }}>{deaths}</span>
         </Div>
        </Content>
        </div>
@@ -116,11 +122,14 @@ class App extends Component {
 
   async getData(){
     const respone = await Axios.get('https://covid19.mathdro.id/api');
+    let lastData= respone.data.lastUpdate;
+    let myData = lastData.slice(0,10);
+    let myTime = lastData.slice(11,16);
     this.setState({
       confirmed: respone.data.confirmed.value,
       recovered: respone.data.recovered.value,
       deaths: respone.data.deaths.value,
-      lastUpdate: respone.data.lastUpdate
+      lastUpdate: myData + ' ' + myTime 
     })
   }
   async getDataPoland(){
@@ -156,14 +165,15 @@ class App extends Component {
   render(){
    return (
      <Container >
-       <H1>Statystyki kolanowirusa</H1>
+       <H1>Statystyki koronawirusa</H1>
        <Box title="Świat:" confirmed={this.state.confirmed} recovered={this.state.recovered} deaths={this.state.deaths} />
       <Box title="Polska:" confirmed={this.state.confirmedPoland} recovered={this.state.recoveredPoland} deaths={this.state.deathsPoland} />
      <H1><Select onChange={this.getCountryData}>
         {this.selectCountry()}
       </Select></H1> 
       <Box title="" confirmed={this.state.confirmedCountry} recovered={this.state.recoveredCountry} deaths={this.state.deathsCountry} />
-      {this.state.lastUpdate}
+      <Footer style={{color: '#000'}}> Ostatnia aktualizacja: <br/>{this.state.lastUpdate}</Footer>
+        
      </Container>
     
 
