@@ -4,7 +4,7 @@ import React, {Component} from 'react';
 import styled from 'styled-components'
 
 const Container = styled.div`
-background: #343744;
+background: ${props => props.dark ? 'rgb(52, 55, 68)' : '#eee'} ;
 width: 80%;
 border-radius: 25px;
 padding: 20px;
@@ -12,11 +12,18 @@ padding-top:20px;
 max-width: 680px;
 text-align:center;
 margin: 0 auto;
-margin-top: 40px;
-margin-bottom: 40px;
+
 justify-content: center;
 font-size: 20px;
 font-family: 'Roboto Mono', monospace;
+position: relative;
+`
+const Body= styled.div`
+background: ${props => props.dark ? '1f2427' : '#aaa'} ;
+height: inherit;
+width: inherit;
+padding-top: 40px;
+padding-bottom: 40px;
 `
 const Content = styled.div`
 display: flex;
@@ -29,7 +36,7 @@ justify-content: center;
   padding-top:25px;
 `
 const Div = styled.div`
-background: #1f2427;
+background: ${props => props.dark ? '#ff8c66' : '#1f2427'} ;
 width: 150px;
 padding: 10px;
 border-radius: 10px;
@@ -65,6 +72,27 @@ padding-bottom:5px;
 const Footer = styled.footer`
 font-size: 15px;
 color: #000;
+@media (max-width: 600px){
+  font-size: 11px;
+}
+
+`
+const But = styled.button`
+position:absolute;
+right: 10px;
+bottom: 20px;
+border-radius:10px;
+padding:10px;
+font-size:16px;
+border:0;
+font-size: 15px;
+font-family: 'Roboto Mono';
+color:${props => props.dark ? '#aaa' :'#1f2427' } ;
+background: ${props => props.dark ? '#1f2427' : '#aaa'} ;
+@media (max-width: 600px){
+  font-size: 11px;
+  bottom: 5px;
+}
 `
 class Box extends Component{
 
@@ -111,7 +139,8 @@ class App extends Component {
     recoveredCountry: 0,
     deathsCountry: 0,
     countries:[],
-    lastUpdate:''
+    lastUpdate:'',
+    dark: true
 
   }
   componentDidMount = () =>{
@@ -161,10 +190,14 @@ class App extends Component {
       return <Option key={i}>{country.name}</Option>
     })
   }
-
+  changeMotyw = ()=>{
+    this.setState({dark: !this.state.dark})
+  } 
   render(){
    return (
-     <Container >
+     <Body dark={this.state.dark}>
+     <Container dark={this.state.dark}>
+       <But  onClick={this.changeMotyw} dark={this.state.dark}>Dark/Light</But>
        <H1>Statystyki koronawirusa</H1>
        <Box title="Świat:" confirmed={this.state.confirmed} recovered={this.state.recovered} deaths={this.state.deaths} />
       <Box title="Polska:" confirmed={this.state.confirmedPoland} recovered={this.state.recoveredPoland} deaths={this.state.deathsPoland} />
@@ -175,7 +208,7 @@ class App extends Component {
       <Footer style={{color: '#000'}}> Ostatnia aktualizacja: <br/>{this.state.lastUpdate}</Footer>
         
      </Container>
-    
+     </Body>
 
   ); 
   }
