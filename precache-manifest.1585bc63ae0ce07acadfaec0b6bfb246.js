@@ -1,11 +1,11 @@
 self.__precacheManifest = [
   {
-    "revision": "d8fda5aba7635a63821b",
+    "revision": "8a656cc484469886e02a",
     "url": "/koronawirus/static/css/main.2b77217c.chunk.css"
   },
   {
-    "revision": "d8fda5aba7635a63821b",
-    "url": "/koronawirus/static/js/main.145c676b.chunk.js"
+    "revision": "8a656cc484469886e02a",
+    "url": "/koronawirus/static/js/main.41a176db.chunk.js"
   },
   {
     "revision": "ba1acac997cd17d9fa69",
@@ -16,7 +16,7 @@ self.__precacheManifest = [
     "url": "/koronawirus/static/js/2.10b1e49b.chunk.js"
   },
   {
-    "revision": "aa5db5c2e61ec308a6655162dc259ff0",
+    "revision": "aa7210c55a4d7ddea37d5d7a4580b0dc",
     "url": "/koronawirus/index.html"
   }
 ];
