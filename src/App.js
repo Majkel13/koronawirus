@@ -81,6 +81,10 @@ cursor: pointer;
 margin-top: -20px;
 margin-bottom: 20px;
 font-size: 15px;
+@media (max-width: 768px){
+  margin-top: 3px;
+}
+
 `
 
 class App extends Component {
