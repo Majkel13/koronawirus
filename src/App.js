@@ -21,10 +21,11 @@ position: relative;
 `
 const Body = styled.div`
 background: ${props => props.dark ? '1f2427' : '#aaa'} ;
-height: inherit;
+height: 100%;
+min-height: 100vh;
 width: inherit;
-padding-top: 40px;
-padding-bottom: 40px;
+padding-top: 4vh;
+padding-bottom: 4vh;
 `
 const H1 = styled.header`
 color: #aaa;
@@ -84,7 +85,12 @@ font-size: 15px;
 @media (max-width: 768px){
   margin-top: 3px;
 }
+`
 
+const DetailList = styled.div`
+@media (max-width: 400px){
+  font-size: 15px;
+}
 `
 
 class App extends Component {
@@ -109,7 +115,8 @@ class App extends Component {
     dark: true,
     timelineitems: [],
     time: [],
-    click: false
+    click: false,
+    error: false
 
   }
   componentDidMount = () => {
@@ -120,53 +127,108 @@ class App extends Component {
   }
 
   async getData() {
-    const respone = await Axios.get('https://covid19.mathdro.id/api');
-    let lastData = respone.data.lastUpdate;
-    let myData = lastData.slice(0, 10);
-    let myTime = lastData.slice(11, 16);
-    this.setState({
-      confirmed: respone.data.confirmed.value,
-      recovered: respone.data.recovered.value,
-      deaths: respone.data.deaths.value,
-      lastUpdate: myData + ' ' + myTime
-    })
+    try{
+      const respone = await Axios.get('https://covid19.mathdro.id/api');
+      let lastData = respone.data.lastUpdate;
+      let myData = lastData.slice(0, 10);
+      let myTime = lastData.slice(11, 16);
+      this.setState({
+        confirmed: respone.data.confirmed.value,
+        recovered: respone.data.recovered.value,
+        deaths: respone.data.deaths.value,
+        lastUpdate: myData + ' ' + myTime
+      })
+    }
+    catch{
+      this.setState({
+        confirmed: 'brak danych',
+        recovered: 'brak danych',
+        deaths: 'brak danych',
+        lastUpdate: 'brak danych'
+      })
+    }
+    
 
 
   }
   async getDataPoland() {
-    const respone = await Axios.get('https://covid19.mathdro.id/api/countries/PL');
-    this.setState({
-      confirmedPoland: respone.data.confirmed.value,
-      recoveredPoland: respone.data.recovered.value,
-      deathsPoland: respone.data.deaths.value
-    })
+    
+    try{
+        const respone = await Axios.get('https://covid19.mathdro.id/api/countries/PL');
+      this.setState({
+        confirmedPoland: respone.data.confirmed.value,
+        recoveredPoland: respone.data.recovered.value,
+        deathsPoland: respone.data.deaths.value
+      })
+    }
+    catch(err)
+    {
+      this.setState({
+        confirmedPoland: 'brak danych',
+        recoveredPoland: 'brak danych',
+        deathsPoland: 'brak danych'
+      })
+    }
+    
   }
+
   async getTimeDataPoland() {
-    const respone = await Axios.get("https://api.thevirustracker.com/free-api?countryTimeline=PL");
-    const t = JSON.parse(JSON.stringify(respone.data.timelineitems[0]));
-    const time = Object.keys(respone.data.timelineitems[0]);
-    const timelineitems = Object.values(t);
-    timelineitems.pop();
-    this.setState({
-      timelineitems: timelineitems,
-      time
-    })
+    try{
+      const respone = await Axios.get("https://api.thevirustracker.com/free-api?countryTimeline=PL");
+      const t = JSON.parse(JSON.stringify(respone.data.timelineitems[0]));
+      const time = Object.keys(respone.data.timelineitems[0]);
+      const timelineitems = Object.values(t);
+      timelineitems.pop();
+      this.setState({
+        timelineitems: timelineitems,
+        time
+      })
+    }
+    catch(err)
+    {
+      this.setState({
+        timelineitems: [],
+        time: [],
+        error: true
+      })
+      console.log(err)
+    }
+    
   }
   async getCountry() {
-    const respone = await Axios.get('https://covid19.mathdro.id/api/countries');
-    const countries = JSON.parse(JSON.stringify(respone.data.countries));
+    try{
+      const respone = await Axios.get('https://covid19.mathdro.id/api/countries');
+      const countries = JSON.parse(JSON.stringify(respone.data.countries));
 
-    this.setState({
-      countries
-    })
+      this.setState({
+        countries
+      })
+    }
+    catch(err)
+    {
+      this.setState({
+        countries: []
+      })
+    }
   }
   async getCountryData(e) {
-    const respone = await Axios.get(`https://covid19.mathdro.id/api/countries/${e.target.value}`);
-    this.setState({
-      confirmedCountry: respone.data.confirmed.value,
-      recoveredCountry: respone.data.recovered.value,
-      deathsCountry: respone.data.deaths.value
-    })
+    try{
+      const respone = await Axios.get(`https://covid19.mathdro.id/api/countries/${e.target.value}`);
+      this.setState({
+        confirmedCountry: respone.data.confirmed.value,
+        recoveredCountry: respone.data.recovered.value,
+        deathsCountry: respone.data.deaths.value
+      })
+    }
+    catch(err)
+    {
+      this.setState({
+        confirmedCountry: 'brak danych',
+        recoveredCountry: 'brak danych',
+        deathsCountry: 'brak danych'
+      })
+    }
+    
   }
   selectCountry() {
     return this.state.countries.map((country, i) => {
@@ -187,7 +249,7 @@ class App extends Component {
     this.setState({ click: !this.state.click })
   }
   render() {
-    const { dark, click } = this.state;
+    const { dark, click ,error} = this.state;
 
     return (
       <Body dark={dark}>
@@ -197,17 +259,21 @@ class App extends Component {
           <Box title="Świat" confirmed={this.state.confirmed} recovered={this.state.recovered} deaths={this.state.deaths} />
           <Box title="Polska" confirmed={this.state.confirmedPoland} recovered={this.state.recoveredPoland} deaths={this.state.deathsPoland} />
           <Detail onClick={this.getDetails}>{click ? <span>Ukryj</span> : <span>Pokaż</span>} szczegóły</Detail>
-          <div>{click ? <div>{this.state.timelineitems.map((t, i) => <div key={i}>
+          
+          <DetailList>{click ? <div>{this.state.timelineitems.map((t, i) => <div key={i}>
             <p style={{ color: '#999' }}>{this.convertDate(i)}</p>
             <p> Nowe przypadki:<span style={{ color: '#b38f00' }}> {t.new_daily_cases}</span><br />
-        Nowe zgony: <span style={{ color: '#c11' }}>{t.new_daily_deaths}</span> <br />
-        Wszystkie przypadki: <span style={{ color: '#bb7733' }}> {t.total_cases}</span><br />
-        Łącznie zgonów: <span style={{ color: '#911' }}>{t.total_deaths}</span> <br />
-        Łącznie wyzdrowień:<span style={{ color: '#12aa23' }}> {t.total_recoveries}</span>
+                Nowe zgony: <span style={{ color: '#c11' }}>{t.new_daily_deaths}</span> <br />
+                Wszystkie przypadki: <span style={{ color: '#bb7733' }}> {t.total_cases}</span><br />
+                Łącznie zgonów: <span style={{ color: '#911' }}>{t.total_deaths}</span> <br />
+                Łącznie wyzdrowień:<span style={{ color: '#12aa23' }}> {t.total_recoveries}</span>
+            
             </p> </div>)} <span style={{ color: '#c11', fontSize: '14px' }}>
-              UWAGA Dane szczegółowe dotyczące wyzdrownień pochodzą z innego źródła i mogą się różnić od danych ogólnych
+              {error ?  <span>Brak danych</span> : 
+              <span>UWAGA Dane szczegółowe dotyczące wyzdrownień pochodzą z innego źródła i mogą się różnić od danych ogólnych</span> }
           </span></div> : <div></div>}
-          </div>
+          </DetailList>
+
           <H1>
             <Select dark={dark} onChange={this.getCountryData}>
               {this.selectCountry()}
