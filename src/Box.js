@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import styled from 'styled-components'
+import styled from 'styled-components';
+import AnimatedNumber from 'animated-number-react';
 
 const Content = styled.div`
 display: flex;
@@ -28,6 +29,7 @@ padding-top:15px;
 
 class Box extends Component{
 
+  formatValue = value => value.toFixed(0);
 
     render(){
       const {confirmed,recovered,deaths,title} = this.props;
@@ -37,15 +39,15 @@ class Box extends Component{
         <Content> 
           <Div >
             <header>Zarażeń</header>
-            <span style={{ color: '#b38f00' }}>{confirmed}</span>
+            <span style={{ color: '#b38f00' }}><AnimatedNumber value={confirmed} formatValue={this.formatValue} /></span>
           </Div>
           <Div >
             <header>Wyzdrownień</header>
-             <span style={{ color: '#12aa23' }}>{recovered}</span>
+             <span style={{ color: '#12aa23' }}> <AnimatedNumber value={recovered}  formatValue={this.formatValue} /></span>
           </Div>
           <Div >
             <header>Zgonów</header>
-            <span style={{ color: '#c11' }}>{deaths}</span>
+            <span style={{ color: '#c11' }}> <AnimatedNumber value={deaths}  formatValue={this.formatValue} /></span>
           </Div>
          </Content>
          </div>
